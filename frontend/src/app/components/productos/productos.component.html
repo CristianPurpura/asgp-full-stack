@@ -1,0 +1,85 @@
+<app-layout>
+  <div class="page-header">
+    <h2>🛍️ Productos</h2>
+    @if (authService.isAdmin()) {
+      <button class="btn btn-primary" (click)="abrirModalNuevo()">+ Crear Nuevo Producto</button>
+    }
+  </div>
+
+  <div class="content-wrapper">
+    <div class="content-card">
+
+    @if (loading()) {
+      <div style="text-align: center; padding: 3rem;">
+        <div style="border: 3px solid #f3f3f3; border-top: 3px solid #1976d2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <p style="margin-top: 1rem; color: #666;">Cargando productos...</p>
+      </div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            @if (authService.isAdmin()) {
+              <th>Acciones</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (producto of productos(); track producto.ID) {
+            <tr>
+              <td>{{ producto.ID }}</td>
+              <td>{{ producto.NOMBRE }}</td>
+              <td>{{ producto.DESCRIPCION }}</td>
+              <td>{{ producto.CATEGORIA }}</td>
+              <td>${{ producto.PRECIO }}</td>
+              @if (authService.isAdmin()) {
+                <td>
+                  <button class="btn btn-warning" (click)="abrirModalEditar(producto)" style="padding: 0.4rem 0.8rem; font-size: 0.875rem; margin-right: 0.5rem;">✏️</button>
+                  <button class="btn btn-danger" (click)="eliminarProducto(producto.ID)" style="padding: 0.4rem 0.8rem; font-size: 0.875rem;">🗑️</button>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+    </div>
+  </div>
+</app-layout>
+
+@if (showModal()) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ productoEditando ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+        <button class="modal-close" (click)="cerrarModal()">×</button>
+      </div>
+      <form (ngSubmit)="guardarProducto()">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input type="text" class="form-control" [(ngModel)]="nombre" name="nombre" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <input type="text" class="form-control" [(ngModel)]="descripcion" name="descripcion" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Categoría</label>
+          <input type="text" class="form-control" [(ngModel)]="categoria" name="categoria" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precio</label>
+          <input type="number" class="form-control" [(ngModel)]="precio" name="precio" required />
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
