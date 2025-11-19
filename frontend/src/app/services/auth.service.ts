@@ -9,7 +9,8 @@ import { ApiResponse } from '../models/api-response.model';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
+  // Hardcode temporal para asegurar llamadas correctas en producción.
+  private apiUrl = 'https://98.95.235.51/api/auth';
   currentUser = signal<Usuario | null>(null);
   isAuthenticated = signal<boolean>(false);
 
@@ -53,6 +54,8 @@ export class AuthService {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
+    // Log de diagnóstico
+    console.log('[AuthService] POST', `${this.apiUrl}/login`, 'payloadKeys=', Object.keys(credentials));
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
         if (response?.success) {

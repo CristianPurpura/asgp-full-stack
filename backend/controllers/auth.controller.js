@@ -19,8 +19,17 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        const { mail, contraseña } = req.body;
-        const resultado = await authService.login(mail, contraseña);
+        const { mail, contraseña, password } = req.body;
+        const pass = contraseña || password;
+
+        // Logging básico sin exponer la contraseña
+        console.log(`[LOGIN] intento mail=${mail || 'N/D'} keys=${Object.keys(req.body).join(',')}`);
+
+        if (!mail || !pass) {
+            throw new Error('Email y contraseña son requeridos');
+        }
+
+        const resultado = await authService.login(mail, pass);
         res.json({ 
             success: true,
             message: 'Login exitoso', 
