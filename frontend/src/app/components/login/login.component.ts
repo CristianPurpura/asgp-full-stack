@@ -31,7 +31,32 @@ export class LoginComponent {
     }
   }
 
-  loginCognito(): void {
-    this.authService.loginWithCognito();
+  onSubmit(): void {
+    if (!this.mail || !this.password) {
+      this.error.set('Por favor complete todos los campos');
+      return;
+    }
+
+    this.loading.set(true);
+    this.error.set('');
+
+    this.authService.login({ mail: this.mail, contraseña: this.password })
+      .subscribe({
+        next: (response: any) => {
+          if (response?.success) {
+            const rol = this.authService.currentUser()?.rol;
+            if (rol === 'ADMIN') {
+              this.router.navigate(['/dashboard']);
+            } else {
+              this.router.navigate(['/ventas']);
+            }
+          }
+        },
+        error: (err) => {
+          this.error.set(err.error?.message || 'Error al iniciar sesión');
+          this.loading.set(false);
+        },
+        complete: () => this.loading.set(false)
+      });
   }
 }
