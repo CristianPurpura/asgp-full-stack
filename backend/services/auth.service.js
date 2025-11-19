@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const usuarioRepository = require('../repositories/usuario.repository');
+const bcrypt = require('bcryptjs');
 
 class AuthService {
     async login(mail, contraseña) {
@@ -15,9 +16,18 @@ class AuthService {
             throw new Error('Credenciales inválidas');
         }
 
-        // Verificar contraseña (comparación directa por ahora)
-        // En producción, usar bcrypt.compare()
-        if (contraseña !== usuario.CONTRASEÑA) {
+        const almacenada = usuario.CONTRASEÑA;
+
+        let esValida;
+        if (typeof almacenada === 'string' && almacenada.startsWith('$2a$')) {
+            // Hash bcrypt
+            esValida = await bcrypt.compare(contraseña, almacenada);
+        } else {
+            // Texto plano
+            esValida = contraseña === almacenada;
+        }
+
+        if (!esValida) {
             throw new Error('Credenciales inválidas');
         }
 
