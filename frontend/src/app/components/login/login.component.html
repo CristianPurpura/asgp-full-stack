@@ -3,16 +3,53 @@
     <h1 class="neon-title"> Full 7x24</h1>
     <h2 class="text-center mb-3" style="color: #0ff; text-shadow: 0 0 10px #0ff;">Sistema de Gestión</h2>
     
-    <div class="d-flex justify-content-center mt-4">
-      <button 
-        type="button" 
-        class="btn btn-primary py-3" 
-        style="width: 100%; font-size: 1.1rem;"
-        (click)="loginCognito()"
-      >
-        Iniciar Sesión
-      </button>
-    </div>
+    @if (errorMessage()) {
+      <div class="alert alert-danger">{{ errorMessage() }}</div>
+    }
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group mb-3">
+        <label for="email" style="color: #0ff;">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          class="form-control" 
+          formControlName="email"
+          placeholder="tu@email.com"
+          [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <div class="invalid-feedback">Email es requerido y debe ser válido</div>
+        }
+      </div>
+
+      <div class="form-group mb-3">
+        <label for="password" style="color: #0ff;">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          class="form-control" 
+          formControlName="password"
+          placeholder="Tu contraseña"
+          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <div class="invalid-feedback">Contraseña es requerida</div>
+        }
+      </div>
+
+      <div class="d-flex justify-content-center mt-4">
+        <button 
+          type="submit" 
+          class="btn btn-primary py-3" 
+          style="width: 100%; font-size: 1.1rem;"
+          [disabled]="loginForm.invalid || loading()">
+          @if (loading()) {
+            Iniciando sesión...
+          } @else {
+            Iniciar Sesión
+          }
+        </button>
+      </div>
+    </form>
 
     <div class="mt-4 text-center" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
       <p><strong style="color: #0ff;">Usuarios de prueba:</strong></p>
