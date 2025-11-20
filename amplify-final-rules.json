@@ -1,1 +1,0 @@
-[{"source":"/api/<*>","target":"http://98.95.235.51:3000/api/<*>","status":"200","condition":null},{"source":"/<*>","target":"/index.html","status":"404"}]
