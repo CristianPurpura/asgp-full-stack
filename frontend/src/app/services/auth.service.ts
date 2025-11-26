@@ -10,7 +10,7 @@ import { ApiResponse } from '../models/api-response.model';
 })
 export class AuthService {
   // Hardcode temporal para asegurar llamadas correctas en producción.
-  private apiUrl = 'http://98.95.235.51/api/auth';
+  private apiUrl = 'https://98.95.235.51/api/auth';
   currentUser = signal<Usuario | null>(null);
   isAuthenticated = signal<boolean>(false);
 
